@@ -1,295 +1,613 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Mensagem de Amor</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Um Presente Especial Para Você</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    html, body {
-      height: 100%;
-      margin: 0;
-      background: linear-gradient(135deg, #ffbfd9, #ff7ca1);
-      font-family: 'Montserrat', sans-serif;
-      color: #fff;
-      overflow: hidden;
-      user-select: none;
-    }
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            transition: background 4s ease-out;
+        }
 
-    .background-hearts {
-      position: fixed;
-      width: 100vw;
-      height: 100vh;
-      top: 0; left: 0;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 0;
-    }
-    .background-hearts span {
-      position: absolute;
-      display: block;
-      width: 15px;
-      height: 15px;
-      background: #fff0f5;
-      opacity: 0.7;
-      transform-origin: center;
-      clip-path: polygon(50% 0%, 61% 17%, 98% 35%, 79% 95%, 50% 82%, 21% 95%, 2% 35%, 39% 17%);
-      animation-name: drift;
-      animation-timing-function: ease-in-out;
-      animation-iteration-count: infinite;
-    }
-    @keyframes drift {
-      0% { transform: translateY(0) rotate(0deg); opacity: 0.7;}
-      50% { opacity: 0.2;}
-      100% { transform: translateY(-100vh) rotate(360deg); opacity: 0;}
-    }
+        body.romantic {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fad0c4 100%);
+        }
 
-    .container {
-      position: fixed;
-      inset: 0;
-      z-index: 10;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      user-select: text;
-      padding: 10px;
-      text-align: center;
-    }
+        /* Partículas de coração no fundo */
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 2s ease-in;
+        }
 
-    .choice-container {
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      margin-top: 10px;
-    }
+        .floating-hearts.show {
+            opacity: 1;
+        }
 
-    button {
-      font-family: 'Pacifico', cursive;
-      font-size: 1.8rem;
-      border: none;
-      padding: 12px 40px;
-      border-radius: 30px;
-      cursor: pointer;
-      background: #ff6b81;
-      color: white;
-      box-shadow: 0 5px 15px rgba(255, 107, 129, 0.5);
-      transition: background-color 0.3s ease;
-      user-select: none;
-    }
-    button:hover {
-      background: #ff8fa2;
-    }
+        .heart-particle {
+            position: absolute;
+            font-size: 20px;
+            color: rgba(255, 182, 193, 0.7);
+            animation: floatUp 8s linear infinite;
+        }
 
-    #questionText {
-      font-family: 'Pacifico', cursive;
-      font-size: 2.4rem;
-      color: #fff;
-      text-shadow: 0 0 8px #ff6b81;
-      max-width: 90vw;
-      user-select: text;
-    }
+        @keyframes floatUp {
+            0% {
+                opacity: 0;
+                transform: translateY(100vh) scale(0);
+            }
+            10% {
+                opacity: 1;
+                transform: translateY(90vh) scale(1);
+            }
+            90% {
+                opacity: 1;
+                transform: translateY(10vh) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-10vh) scale(0);
+            }
+        }
 
-    #namesText {
-      font-family: 'Pacifico', cursive;
-      font-size: 2.4rem;
-      color: #fff;
-      margin-bottom: 10px;
-      text-shadow: 0 0 10px #ff6b81;
-      user-select: text;
-      display: none;
-      max-width: 90vw;
-      word-wrap: break-word;
-    }
+        .container {
+            text-align: center;
+            max-width: 800px;
+            padding: 20px;
+            z-index: 10;
+            position: relative;
+        }
 
-    #footerText {
-      font-family: 'Pacifico', cursive;
-      font-size: 1.8rem;
-      color: #fff;
-      margin-top: 15px;
-      text-shadow: 0 0 10px #ff6b81;
-      user-select: text;
-      display: none;
-      max-width: 90vw;
-      word-wrap: break-word;
-    }
+        /* Tela inicial */
+        .initial-screen {
+            animation: fadeInDown 1s ease-out;
+        }
 
-    #heartSection {
-      position: relative;
-      width: 400px;
-      height: 400px;
-      display: none;
-      margin-top: 15px;
-    }
+        .initial-message {
+            font-size: 2.8rem;
+            color: #e8e8e8;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+            font-weight: bold;
+        }
 
-    svg {
-      width: 400px;
-      height: 400px;
-      display: block;
-      margin: 0 auto;
-    }
+        .gift-container {
+            position: relative;
+            margin: 40px 0;
+        }
 
-    .heart-path {
-      fill: none;
-      stroke: #ff2e6a;
-      stroke-width: 5;
-      stroke-linejoin: round;
-      stroke-linecap: round;
-      stroke-dasharray: 650;
-      stroke-dashoffset: 650;
-      animation: drawHeart 3s forwards ease-in-out;
-    }
-    @keyframes drawHeart {
-      to {
-        stroke-dashoffset: 0;
-      }
-    }
-    .heart-fill {
-      fill: #ff2e6a;
-      opacity: 0;
-      animation: fillHeart 1.5s ease-in-out 3s forwards;
-    }
-    @keyframes fillHeart {
-      to {
-        opacity: 1;
-      }
-    }
+        .gift-box {
+            width: 200px;
+            height: 150px;
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            margin: 0 auto;
+            position: relative;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            animation: giftFloat 3s ease-in-out infinite;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
 
-    .text-container {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 75%;
-      max-height: 65%;
-      overflow-y: auto;
-      transform: translate(-50%, -50%);
-      color: white;
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 600;
-      font-size: 1.05rem;
-      line-height: 1.4;
-      user-select: text;
-      white-space: pre-line;
-      text-shadow: 0 0 6px #ff7297cc;
-      -webkit-overflow-scrolling: touch;
-      padding: 0 10px;
-      box-sizing: border-box;
-      opacity: 0;
-      transition: opacity 1.5s ease-in-out;
-    }
+        .gift-box:hover {
+            transform: scale(1.08);
+        }
 
-    .text-container::-webkit-scrollbar {
-      width: 6px;
-    }
-    .text-container::-webkit-scrollbar-thumb {
-      background: #ff6b81cc;
-      border-radius: 3px;
-    }
+        .gift-lid {
+            width: 200px;
+            height: 50px;
+            background: linear-gradient(45deg, #c0392b, #a93226);
+            position: absolute;
+            top: -25px;
+            left: 0px;
+            border-radius: 15px;
+            transition: all 1s ease;
+            transform-origin: bottom;
+            z-index: 3;
+        }
 
-    @media (max-width: 400px) {
-      #heartSection {
-        width: 90vw;
-        height: 90vw;
-      }
-      svg {
-        width: 90vw;
-        height: 90vw;
-      }
-      .text-container {
-        font-size: 0.9rem;
-        max-height: 50%;
-      }
-      button {
-        font-size: 1.4rem;
-        padding: 10px 30px;
-      }
-      #questionText {
-        font-size: 2rem;
-      }
-      #namesText {
-        font-size: 2rem;
-      }
-      #footerText {
-        font-size: 1.6rem;
-      }
-    }
-  </style>
+        .gift-lid.open {
+            transform: rotateX(-120deg) translateY(-50px);
+        }
+
+        .gift-ribbon-v {
+            width: 20px;
+            height: 150px;
+            background: linear-gradient(to right, #f1c40f, #f39c12);
+            position: absolute;
+            left: 50%;
+            top: -25px;
+            transform: translateX(-50%);
+            border-radius: 10px;
+            z-index: 2;
+        }
+
+        .gift-ribbon-h {
+            width: 200px;
+            height: 20px;
+            background: linear-gradient(to bottom, #f1c40f, #f39c12);
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 10px;
+            z-index: 2;
+        }
+
+        .gift-bow {
+            width: 50px;
+            height: 30px;
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 5;
+        }
+
+        .gift-bow::before,
+        .gift-bow::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            background: #f39c12;
+            position: absolute;
+            border-radius: 50%;
+            top: 5px;
+        }
+
+        .gift-bow::before {
+            left: 3px;
+            transform: skew(-10deg);
+        }
+
+        .gift-bow::after {
+            right: 3px;
+            transform: skew(10deg);
+        }
+
+        @keyframes giftFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .buttons {
+            margin-top: 40px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            margin: 0 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-accept {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            color: white;
+            box-shadow: 0 8px 20px rgba(46, 204, 113, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-accept:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(46, 204, 113, 0.5);
+        }
+
+        .btn-decline {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-decline:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(231, 76, 60, 0.5);
+        }
+
+        /* Coração que sai do presente */
+        .heart-emerging {
+            position: absolute;
+            font-size: 100px;
+            color: #e74c3c;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            z-index: 15;
+        }
+
+        .heart-emerging.show {
+            animation: heartEmerge 2s ease-out forwards;
+        }
+
+        @keyframes heartEmerge {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0) rotate(0deg);
+            }
+            50% {
+                opacity: 1;
+                transform: translate(-50%, -150%) scale(1.2) rotate(180deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -200%) scale(1) rotate(360deg);
+            }
+        }
+
+        /* Tela final */
+        .final-screen {
+            display: none;
+            animation: fadeIn 2s ease-out;
+        }
+
+        .big-heart {
+            font-size: 150px;
+            color: #e74c3c;
+            margin-bottom: 30px;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 3s ease-out;
+        }
+
+        .big-heart.show {
+            opacity: 1;
+            transform: scale(1);
+            animation: heartBeat 2s ease-in-out infinite 3s;
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .love-message {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 40px;
+            line-height: 1.6;
+            font-style: italic;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .photos-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .photo {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 5px solid #fff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            object-fit: cover;
+            animation: photoFloat 4s ease-in-out infinite;
+        }
+
+        .photo:nth-child(2) {
+            animation-delay: 2s;
+        }
+
+        @keyframes photoFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(2deg); }
+        }
+
+        /* Classes de controle */
+        .hidden {
+            display: none !important;
+        }
+
+        .fade-out {
+            animation: fadeOut 1s ease-out forwards;
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Audio controls */
+        .audio-controls {
+            margin-top: 20px;
+        }
+
+        .audio-controls button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid #fff;
+            border-radius: 50px;
+            color: #fff;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+
+        .audio-controls button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .initial-message {
+                font-size: 2rem;
+            }
+            
+            .gift-box {
+                width: 150px;
+                height: 120px;
+            }
+            
+            .gift-box {
+                width: 150px;
+                height: 120px;
+            }
+            
+            .gift-lid {
+                width: 150px;
+                height: 30px;
+                top: -15px;
+                left: 0px;
+            }
+            
+            .gift-ribbon-v {
+                width: 15px;
+                height: 135px;
+                top: -15px;
+            }
+            
+            .gift-ribbon-h {
+                width: 150px;
+                height: 15px;
+                top: 45px;
+            }
+            
+            .photos-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .photo {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .love-message {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="background-hearts" aria-hidden="true"></div>
+    <!-- Partículas de coração flutuante -->
+    <div id="floatingHearts" class="floating-hearts"></div>
 
-  <main class="container" role="main" aria-label="Mensagem de amor interativa">
-    <div id="choiceSection" aria-live="polite" aria-atomic="true" aria-describedby="questionText">
-      <p id="questionText">Você deseja ler a mensagem?</p>
-      <div class="choice-container">
-        <button id="buttonSim" aria-label="Sim">Sim</button>
-        <button id="buttonNao" aria-label="Não">Não</button>
-      </div>
+    <div class="container">
+        <!-- Tela inicial -->
+        <div id="initialScreen" class="initial-screen">
+            <h1 class="initial-message">💝 Você recebeu um presente! 💝</h1>
+            
+            <div class="gift-container">
+                <div id="giftBox" class="gift-box">
+                    <div id="giftLid" class="gift-lid"></div>
+                    <div class="gift-ribbon-v"></div>
+                    <div class="gift-ribbon-h"></div>
+                    <div class="gift-bow"></div>
+                </div>
+                <div id="heartEmerging" class="heart-emerging">💖</div>
+            </div>
+            
+            <div class="buttons">
+                <button id="acceptBtn" class="btn btn-accept">💝 Aceitar</button>
+                <button id="declineBtn" class="btn btn-decline">😢 Recusar</button>
+            </div>
+        </div>
+
+        <!-- Tela final -->
+        <div id="finalScreen" class="final-screen">
+            <div id="bigHeart" class="big-heart">💖</div>
+            
+            <div class="love-message">
+                <!-- SUBSTITUA ESTA MENSAGEM PELA SUA -->
+               Amor,
+Eu sei que a gente está passando por um momento difícil, e entendo que nada disso vai ser simples de superar. Mas quero que saiba que eu te amo tanto, que não quero mais que as brigas sejam maiores que o que sentimos um pelo outro. Nossos problemas eu quero resolver ao seu lado, para que a gente consiga seguir em frente juntos.
+
+Quero te mostrar que você pode sim, ser amada, lembrada e valorizada em cada detalhe. Para mim isso não é pesado, se tornou natural, porque você merece tudo isso. Também quero me alinhar a você às suas expectativas, vontades e desejos, do mesmo jeito que quero que você também se alinhe a mim e se entregue. Não quero mais sentir que estou lutando sozinho para te alcançar, quero que seja leve, recíproco e verdadeiro.
+
+Escrevo isso porque é a forma que eu encontrei de te demonstrar o quanto te amo. Não é uma carta física, mas é muito especial para mim, porque vem do fundo do meu coração. Pode ser que eu não seja o melhor com palavras, mas é de verdade, eu amo você, amo seu sorriso, seus abraços, e cada detalhe que fez você entrar na minha vida. Cada segundo ao seu lado é único e inesquecível.
+
+Você é deslumbrante,majestosa e sim, você é uma grande gostosa. 💙
+                <!-- FIM DA MENSAGEM - SUBSTITUA PELO SEU TEXTO -->
+            </div>
+            
+            <div class="photos-container">
+                <!-- SUBSTITUA OS CAMINHOS DAS IMAGENS PELAS SUAS FOTOS -->
+                <img src="foto1.jpg" alt="Nossa foto 1" class="photo" onerror="this.src='https://via.placeholder.com/200x200/ff9a9e/ffffff?text=Foto+1'">
+                <img src="foto2.jpg" alt="Nossa foto 2" class="photo" onerror="this.src='https://via.placeholder.com/200x200/fecfef/ffffff?text=Foto+2'">
+                <!-- FIM DAS FOTOS -->
+            </div>
+            
+            <div class="audio-controls">
+                <button onclick="toggleMusic()">🎵 Pausar/Tocar</button>
+                <button onclick="restartExperience()">🔄 Reiniciar</button>
+            </div>
+        </div>
     </div>
 
-    <p id="namesText" aria-hidden="true">Gabriel X Larissa</p>
+    <!-- SUBSTITUA O CAMINHO DA MÚSICA PELA SUA -->
+    <audio id="backgroundMusic" preload="auto">
+        <source src="musica.mp3" type="audio/mpeg">
+        <source src="musica.wav" type="audio/wav">
+        Seu navegador não suporta áudio.
+    </audio>
 
-    <section id="heartSection" aria-live="polite" aria-atomic="true">
-      <svg viewBox="0 0 512 512" role="img" aria-label="Coração animado">
-        <path class="heart-path" d="M471.701 73.68c-54.085-51.87-138.19-51.927-192.172-.194l-10.672 10.223-10.673-10.223c-53.925-51.752-138.23-51.626-192.172.194C18.623 108.212 16 144.19 16 176c0 33.82 14.9 67.147 41.393 91.593l178.224 174.224c7.81 7.632 20.485 7.632 28.295 0l178.223-174.224C481.1 243.147 496 209.82 496 176c0-31.81-2.623-67.788-24.299-102.32z"/>
-        <path class="heart-fill" d="M471.701 73.68c-54.085-51.87-138.19-51.927-192.172-.194l-10.672 10.223-10.673-10.223c-53.925-51.752-138.23-51.626-192.172.194C18.623 108.212 16 144.19 16 176c0 33.82 14.9 67.147 41.393 91.593l178.224 174.224c7.81 7.632 20.485 7.632 28.295 0l178.223-174.224C481.1 243.147 496 209.82 496 176c0-31.81-2.623-67.788-24.299-102.32z"/>
-      </svg>
-      <div class="text-container" id="messageText" tabindex="0">
-        Hoje celebramos 7 meses juntos, e não consigo deixar de pensar em como cada dia ao seu lado é um presente. Seus olhos, que brilham como estrelas, têm o poder de iluminar até os meus dias mais sombrios. E o seu sorriso? Ah, o seu sorriso é a razão pela qual meu coração bate mais forte.
-Quero aproveitar este momento especial para pedir desculpas. Sei que ainda cometo erros e que, às vezes, não sou o parceiro que você merece. Mas quero que saiba que estou sempre me esforçando para ser melhor, para te fazer feliz e para merecer o seu amor. Espero que você possa me perdoar e que possamos continuar construindo essa linda história juntos.
-Eu te amo mais do que palavras podem expressar. Que venham muitos mais meses e anos ao seu lado!
-      </div>
-    </section>
+    <script>
+        // Elementos do DOM
+        const initialScreen = document.getElementById('initialScreen');
+        const finalScreen = document.getElementById('finalScreen');
+        const acceptBtn = document.getElementById('acceptBtn');
+        const declineBtn = document.getElementById('declineBtn');
+        const giftBox = document.getElementById('giftBox');
+        const giftLid = document.getElementById('giftLid');
+        const heartEmerging = document.getElementById('heartEmerging');
+        const bigHeart = document.getElementById('bigHeart');
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const floatingHearts = document.getElementById('floatingHearts');
 
-    <p id="footerText" aria-hidden="true">Feliz 7 meses</p>
-  </main>
+        // Criar partículas de coração
+        function createFloatingHearts() {
+            const heartsContainer = document.getElementById('floatingHearts');
+            
+            const heartInterval = setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'heart-particle';
+                heart.innerHTML = '💖';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDuration = (Math.random() * 3 + 5) + 's';
+                heart.style.fontSize = (Math.random() * 15 + 15) + 'px';
+                
+                heartsContainer.appendChild(heart);
+                
+                setTimeout(() => {
+                    heart.remove();
+                }, 8000);
+            }, 800);
+            
+            return heartInterval;
+        }
 
-  <script>
-    const backgroundHearts = document.querySelector('.background-hearts');
-    const heartCount = 40;
+        // Função principal - aceitar presente
+        function acceptGift() {
+            // Desabilitar botões
+            acceptBtn.disabled = true;
+            declineBtn.disabled = true;
 
-    function randomRange(min, max) {
-      return Math.random() * (max - min) + min;
-    }
+            // Iniciar mudança de cor do fundo
+            document.body.classList.add('romantic');
+            
+            // Mostrar corações flutuantes
+            floatingHearts.classList.add('show');
+            
+            // Iniciar criação de corações
+            createFloatingHearts();
 
-    for (let i = 0; i < heartCount; i++) {
-      const heart = document.createElement('span');
-      heart.style.left = `${randomRange(0, 100)}vw`;
-      heart.style.top = '100vh';
-      heart.style.width = `${randomRange(10, 20)}px`;
-      heart.style.height = heart.style.width;
-      heart.style.animationDuration = `${randomRange(8, 15)}s`;
-      heart.style.animationDelay = `${randomRange(0, 15)}s`;
-      heart.style.opacity = Math.random() * 0.6 + 0.2;
-      backgroundHearts.appendChild(heart);
-    }
+            // Abrir a tampa do presente
+            giftLid.classList.add('open');
 
-    const buttonSim = document.getElementById('buttonSim');
-    const buttonNao = document.getElementById('buttonNao');
-    const choiceSection = document.getElementById('choiceSection');
-    const heartSection = document.getElementById('heartSection');
-    const messageText = document.getElementById('messageText');
-    const namesText = document.getElementById('namesText');
-    const footerText = document.getElementById('footerText');
+            // Após 1 segundo, mostrar coração emergindo
+            setTimeout(() => {
+                heartEmerging.classList.add('show');
+            }, 1000);
 
-    buttonSim.addEventListener('click', () => {
-      choiceSection.style.display = 'none';
-      heartSection.style.display = 'block';
-      namesText.style.display = 'block';
-      footerText.style.display = 'block';
-      messageText.style.opacity = '0';
+            // Após 2.5 segundos, fazer presente desaparecer
+            setTimeout(() => {
+                giftBox.style.animation = 'fadeOut 1s ease-out forwards';
+            }, 2500);
 
-      setTimeout(() => {
-        messageText.style.transition = 'opacity 1.5s ease-in-out';
-        messageText.style.opacity = '1';
-      }, 4500);
-    });
+            // Após 4 segundos, trocar para tela final
+            setTimeout(() => {
+                initialScreen.classList.add('fade-out');
+                
+                setTimeout(() => {
+                    initialScreen.classList.add('hidden');
+                    finalScreen.style.display = 'block';
+                    finalScreen.classList.add('fade-in');
+                    
+                    // Mostrar coração grande devagar após 500ms
+                    setTimeout(() => {
+                        console.log('Mostrando coração grande...');
+                        bigHeart.classList.add('show');
+                    }, 500);
+                    
+                    // Tocar música
+                    backgroundMusic.play().catch(e => {
+                        console.log('Não foi possível tocar a música automaticamente:', e);
+                    });
+                }, 1000);
+            }, 4000);
+        }
 
-    buttonNao.addEventListener('click', () => {
-      choiceSection.innerHTML = '<p style="font-family: Pacifico, cursive; font-size: 1.8rem; color: #fff; text-shadow: 0 0 8px #ff6b81;">Tudo bem, quando quiser estarei aqui ❤️</p>';
-    });
-  </script>
+        // Função para recusar presente (opcional)
+        function declineGift() {
+            alert('😢 Que pena... talvez em outra hora?');
+        }
+
+        // Controles de música
+        function toggleMusic() {
+            if (backgroundMusic.paused) {
+                backgroundMusic.play();
+            } else {
+                backgroundMusic.pause();
+            }
+        }
+
+        // Reiniciar experiência
+        function restartExperience() {
+            location.reload();
+        }
+
+        // Event listeners
+        acceptBtn.addEventListener('click', acceptGift);
+        declineBtn.addEventListener('click', declineGift);
+
+        // Configurar volume da música
+        backgroundMusic.volume = 0.5;
+    </script>
 </body>
 </html>
